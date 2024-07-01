@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-const apiPath = process.env.NEXT_PUBLIC_API_PATH || '/api/users'
+const apiPath = process.env.NEXT_PUBLIC_API_PATH || '/api/users';
 
 async function fetchUsers() {
   const res = await fetch(apiPath);
@@ -55,6 +55,9 @@ export default function Users() {
   const [editingUser, setEditingUser] = useState(null);
   const [localData, setLocalData] = useState([]);
   const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [savingId, setSavingId] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     async function loadUsers() {
@@ -69,16 +72,22 @@ export default function Users() {
   }, []);
 
   const handleCreateUser = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
       const createdUser = await createUser(newUser);
       setLocalData((prevData) => [...prevData, createdUser]);
       setNewUser({ name: '', email: '' });
     } catch (error) {
       setError(error.message || 'Error creating user');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleUpdateUser = async (id) => {
+    if (savingId === id) return;
+    setSavingId(id);
     try {
       const updatedUser = await updateUser(id, editingUser);
       setLocalData((prevData) =>
@@ -87,15 +96,21 @@ export default function Users() {
       setEditingUser(null);
     } catch (error) {
       setError(error.message || 'Error updating user');
+    } finally {
+      setSavingId(null);
     }
   };
 
   const handleDeleteUser = async (id) => {
+    if (deletingId === id) return;
+    setDeletingId(id);
     try {
       await deleteUser(id);
       setLocalData((prevData) => prevData.filter((user) => user.id !== id));
     } catch (error) {
       setError(error.message || 'Error deleting user');
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -129,14 +144,15 @@ export default function Users() {
         <button
           onClick={handleCreateUser}
           className='bg-blue-500 text-white p-2 rounded'
+          disabled={isSubmitting}
         >
-          등록
+          {isSubmitting ? '등록 중...' : '등록'}
         </button>
       </div>
       <ul className='space-y-4'>
         {localData.map((user) => (
           <li
-            key={user.id} 
+            key={user.id}
             className='p-4 border rounded shadow-sm hover:shadow-md'
           >
             {editingUser && editingUser.id === user.id ? (
@@ -160,12 +176,14 @@ export default function Users() {
                 <button
                   onClick={() => handleUpdateUser(user.id)}
                   className='bg-green-500 text-white p-2 rounded'
+                  disabled={savingId === user.id}
                 >
-                  저장
+                  {savingId === user.id ? '저장 중...' : '저장'}
                 </button>
                 <button
                   onClick={() => setEditingUser(null)}
                   className='bg-gray-500 text-white p-2 rounded ml-2'
+                  disabled={savingId === user.id}
                 >
                   취소
                 </button>
@@ -180,14 +198,16 @@ export default function Users() {
                   <button
                     onClick={() => setEditingUser(user)}
                     className='bg-yellow-500 text-white p-2 rounded mr-2'
+                    disabled={isSubmitting || deletingId === user.id}
                   >
                     수정
                   </button>
                   <button
                     onClick={() => handleDeleteUser(user.id)}
                     className='bg-red-500 text-white p-2 rounded'
+                    disabled={deletingId === user.id}
                   >
-                    삭제
+                    {deletingId === user.id ? '삭제 중...' : '삭제'}
                   </button>
                 </div>
               </div>
