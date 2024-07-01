@@ -58,6 +58,7 @@ export default function Users() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [savingId, setSavingId] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     async function loadUsers() {
@@ -72,6 +73,10 @@ export default function Users() {
   }, []);
 
   const handleCreateUser = async () => {
+    if (!newUser.name || !newUser.email) {
+      setShowModal(true);
+      return;
+    }
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
@@ -86,6 +91,10 @@ export default function Users() {
   };
 
   const handleUpdateUser = async (id) => {
+    if (!editingUser.name || !editingUser.email) {
+      setShowModal(true);
+      return;
+    }
     if (savingId === id) return;
     setSavingId(id);
     try {
@@ -124,7 +133,7 @@ export default function Users() {
   return (
     <div className='container mx-auto p-4'>
       <h1 className='text-3xl font-bold text-center my-4'>
-        Next.js Proxy Example
+        Next.js Fetching Example
       </h1>
       <div className='mb-4'>
         <input
@@ -215,6 +224,20 @@ export default function Users() {
           </li>
         ))}
       </ul>
+
+      {showModal && (
+        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+          <div className='bg-white p-6 rounded shadow-lg'>
+            <h2 className='text-2xl mb-4'>값을 입력하세요</h2>
+            <button
+              onClick={() => setShowModal(false)}
+              className='bg-blue-500 text-white p-2 rounded'
+            >
+              닫기
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
