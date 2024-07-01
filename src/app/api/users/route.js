@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
-const PREFIX = '/api/users'
+const apiDomain = process.env.NEXT_PUBLIC_API_DOMAIN || 'http://localhost:8080';
+const apiPath = process.env.NEXT_PUBLIC_API_PATH || '/api/users'
+const apiUrl = apiDomain + apiPath;
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
-  const endpoint = id ? `${API_URL}${PREFIX}/${id}` : API_URL;
+  const endpoint = id ? `${apiUrl}/${id}` : apiUrl;
 
   const res = await fetch(endpoint);
   const data = await res.json();
@@ -21,7 +22,7 @@ export async function GET(req) {
 export async function POST(req) {
   const body = await req.json();
 
-  const res = await fetch(API_URL, {
+  const res = await fetch(apiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -42,7 +43,7 @@ export async function PUT(req) {
   const id = searchParams.get("id");
   const body = await req.json();
 
-  const res = await fetch(`${API_URL}/${id}`, {
+  const res = await fetch(`${apiUrl}/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -62,7 +63,7 @@ export async function DELETE(req) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
 
-  const res = await fetch(`${API_URL}/${id}`, {
+  const res = await fetch(`${apiUrl}/${id}`, {
     method: "DELETE",
   });
 

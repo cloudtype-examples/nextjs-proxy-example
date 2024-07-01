@@ -1,9 +1,11 @@
 import UsersList from "./components/UsersList";
 
-const PREFIX = '/api/users'
+const apiDomain = process.env.NEXT_PUBLIC_API_DOMAIN || 'http://localhost:8080';
+const apiPath = process.env.NEXT_PUBLIC_API_PATH || '/api/users'
+const apiUrl = apiDomain + apiPath;
 
 async function fetchData() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${PREFIX}`);
+  const res = await fetch(`${apiUrl}`);
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }

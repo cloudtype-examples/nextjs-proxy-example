@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 
-const API_URL = '/api/users'; 
+const apiPath = process.env.NEXT_PUBLIC_API_PATH || '/api/users'
 
 async function fetchUsers() {
-  const res = await fetch(API_URL);
+  const res = await fetch(apiPath);
   if (!res.ok) {
     throw new Error('Failed to fetch users');
   }
@@ -13,7 +13,7 @@ async function fetchUsers() {
 }
 
 async function createUser(user) {
-  const res = await fetch(API_URL, {
+  const res = await fetch(apiPath, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ async function createUser(user) {
 }
 
 async function updateUser(id, user) {
-  const res = await fetch(`${API_URL}?id=${id}`, {
+  const res = await fetch(`${apiPath}?id=${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ async function updateUser(id, user) {
 }
 
 async function deleteUser(id) {
-  const res = await fetch(`${API_URL}?id=${id}`, {
+  const res = await fetch(`${apiPath}?id=${id}`, {
     method: 'DELETE',
   });
   if (!res.ok) {
