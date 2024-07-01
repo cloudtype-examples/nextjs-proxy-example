@@ -1,8 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const API_URL = '/api/users';
+const API_URL = '/api/users'; 
+
+async function fetchUsers() {
+  const res = await fetch(API_URL);
+  if (!res.ok) {
+    throw new Error('Failed to fetch users');
+  }
+  return res.json();
+}
 
 async function createUser(user) {
   const res = await fetch(API_URL, {
@@ -19,7 +27,7 @@ async function createUser(user) {
 }
 
 async function updateUser(id, user) {
-  const res = await fetch(`${API_URL}/${id}`, {
+  const res = await fetch(`${API_URL}?id=${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -33,7 +41,7 @@ async function updateUser(id, user) {
 }
 
 async function deleteUser(id) {
-  const res = await fetch(`${API_URL}/${id}`, {
+  const res = await fetch(`${API_URL}?id=${id}`, {
     method: 'DELETE',
   });
   if (!res.ok) {
@@ -42,11 +50,23 @@ async function deleteUser(id) {
   return res.json();
 }
 
-export default function Users({ initialData }) {
+export default function Users() {
   const [newUser, setNewUser] = useState({ name: '', email: '' });
   const [editingUser, setEditingUser] = useState(null);
-  const [localData, setLocalData] = useState(initialData);
+  const [localData, setLocalData] = useState([]);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadUsers() {
+      try {
+        const users = await fetchUsers();
+        setLocalData(users);
+      } catch (error) {
+        setError(error.message || 'Error fetching users');
+      }
+    }
+    loadUsers();
+  }, []);
 
   const handleCreateUser = async () => {
     try {
@@ -89,7 +109,7 @@ export default function Users({ initialData }) {
   return (
     <div className='container mx-auto p-4'>
       <h1 className='text-3xl font-bold text-center my-4'>
-        Next.js ISR Example
+        Next.js Fetching Example
       </h1>
       <div className='mb-4'>
         <input
@@ -116,7 +136,7 @@ export default function Users({ initialData }) {
       <ul className='space-y-4'>
         {localData.map((user) => (
           <li
-            key={user.id}
+            key={user.id} 
             className='p-4 border rounded shadow-sm hover:shadow-md'
           >
             {editingUser && editingUser.id === user.id ? (

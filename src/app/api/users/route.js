@@ -1,24 +1,21 @@
+import { NextResponse } from 'next/server';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const PREFIX = '/api/users'
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
-  const endpoint = id ? `${API_URL}/${id}` : API_URL;
+  const endpoint = id ? `${API_URL}${PREFIX}/${id}` : API_URL;
 
   const res = await fetch(endpoint);
   const data = await res.json();
 
   if (!res.ok) {
-    return new Response(JSON.stringify({ error: "Failed to fetch data" }), {
-      status: res.status,
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json({ error: 'Failed to fetch data' }, { status: res.status });
   }
 
-  return new Response(JSON.stringify(data), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+  return NextResponse.json(data, { status: 200 });
 }
 
 export async function POST(req) {
@@ -34,16 +31,10 @@ export async function POST(req) {
   const data = await res.json();
 
   if (!res.ok) {
-    return new Response(JSON.stringify({ error: "Failed to create data" }), {
-      status: res.status,
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json({ error: 'Failed to create data' }, { status: res.status });
   }
 
-  return new Response(JSON.stringify(data), {
-    status: 201,
-    headers: { "Content-Type": "application/json" },
-  });
+  return NextResponse.json(data, { status: 201 });
 }
 
 export async function PUT(req) {
@@ -61,16 +52,10 @@ export async function PUT(req) {
   const data = await res.json();
 
   if (!res.ok) {
-    return new Response(JSON.stringify({ error: "Failed to update data" }), {
-      status: res.status,
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json({ error: 'Failed to update data' }, { status: res.status });
   }
 
-  return new Response(JSON.stringify(data), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+  return NextResponse.json(data, { status: 200 });
 }
 
 export async function DELETE(req) {
@@ -82,14 +67,8 @@ export async function DELETE(req) {
   });
 
   if (!res.ok) {
-    return new Response(JSON.stringify({ error: "Failed to delete data" }), {
-      status: res.status,
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json({ error: 'Failed to delete data' }, { status: res.status });
   }
 
-  return new Response(JSON.stringify({ message: "Data deleted" }), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+  return NextResponse.json({ message: 'Data deleted' }, { status: 200 });
 }

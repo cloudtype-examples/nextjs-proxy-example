@@ -1,7 +1,9 @@
 import UsersList from "./components/UsersList";
 
+const PREFIX = '/api/users'
+
 async function fetchData() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${PREFIX}`);
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
