@@ -124,7 +124,7 @@ export default function Users() {
   return (
     <div className='container mx-auto p-4'>
       <h1 className='text-3xl font-bold text-center my-4'>
-        Next.js Fetching Example
+        Next.js Proxy Example
       </h1>
       <div className='mb-4'>
         <input
