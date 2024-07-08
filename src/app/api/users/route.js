@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 
-const apiDomain = process.env.NEXT_PUBLIC_API_DOMAIN || 'http://localhost:8080';
+const apiOrigin = process.env.NEXT_PUBLIC_API_ORIGIN || 'http://localhost:8080';
 const apiPath = process.env.NEXT_PUBLIC_API_PATH || '/api/users'
-const apiUrl = apiDomain + apiPath;
+const apiUrl = apiOrigin + apiPath;
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);

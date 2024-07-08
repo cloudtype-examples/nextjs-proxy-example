@@ -1,5 +1,3 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 
 const apiPath = process.env.NEXT_PUBLIC_API_PATH || '/api/users';
